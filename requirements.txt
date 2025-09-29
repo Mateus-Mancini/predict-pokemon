@@ -1,7 +1,9 @@
 Flask==2.3.3
-flask-cors==3.1.2
-tensorflow==2.13.0
-numpy==1.26.0
+flask-cors==3.0.10
+tensorflow-cpu==2.20.0
+onnxruntime==1.16.0
+numpy>=1.26,<1.30
 Pillow==10.0.0
 opencv-python==4.8.1.78
-rembg==2.1.0
+rembg==2.0.67
+gunicorn
