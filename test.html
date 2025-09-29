@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Image Classifier</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        max-width: 600px;
+        margin: 40px auto;
+        text-align: center;
+      }
+      input[type="file"] {
+        margin: 20px 0;
+      }
+      #result {
+        margin-top: 20px;
+        font-size: 18px;
+      }
+      img {
+        max-width: 100%;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Test Image Classifier API</h1>
+
+    <input type="file" id="imageInput" accept="image/*" />
+    <button onclick="uploadImage()">Upload & Predict</button>
+
+    <div id="result"></div>
+    <img id="preview" />
+
+    <script>
+      async function uploadImage() {
+        const input = document.getElementById("imageInput");
+        const file = input.files[0];
+        if (!file) {
+          alert("Please select an image first.");
+          return;
+        }
+
+        // Preview the image
+        const preview = document.getElementById("preview");
+        preview.src = URL.createObjectURL(file);
+
+        const formData = new FormData();
+        formData.append("image", file);
+
+        const resultDiv = document.getElementById("result");
+        resultDiv.textContent = "Loading...";
+
+        try {
+          const res = await fetch("http://127.0.0.1:5000/predict", {
+            method: "POST",
+            body: formData,
+          });
+
+          const data = await res.json();
+          if (data.error) {
+            resultDiv.textContent = "Error: " + data.error;
+          } else {
+            resultDiv.textContent = `Prediction: ${
+              data.label
+            } (${data.confidence.toFixed(2)}%) - Used: ${data.used}`;
+          }
+        } catch (err) {
+          console.error(err);
+          resultDiv.textContent =
+            "Request failed. Is the Flask server running?";
+        }
+      }
+    </script>
+  </body>
+</html>
